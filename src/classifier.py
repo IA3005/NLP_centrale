@@ -14,8 +14,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB # With alpha=0.53 acc=78.72
 from sklearn.svm import LinearSVC # With C=0.138 acc=79.26
 
-path_train = '/Users/Flore/python/NLP/Assignment 2/data/traindata.csv'
-path_test = '/Users/Flore/python/NLP/Assignment 2/data/devdata.csv'
+path_train = '/data/traindata.csv'
+path_test = '/data/devdata.csv'
 
 class Classifier:
     """The Classifier"""
