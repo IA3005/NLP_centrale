@@ -12,17 +12,17 @@ from sklearn.feature_extraction.text import TfidfTransformer
 
 from sklearn.model_selection import train_test_split
 
-from sklearn.naive_bayes import BernoulliNB # 76.06
-from sklearn.naive_bayes import MultinomialNB # 77.93
-from sklearn.svm import LinearSVC # 77.13
-from sklearn.svm import SVC # 70.21
+from sklearn.naive_bayes import BernoulliNB # test_acc = 76.06
+from sklearn.naive_bayes import MultinomialNB # test_acc = 77.93
+from sklearn.svm import LinearSVC # test_acc = 77.13
+from sklearn.svm import SVC # test_acc = 70.21
 
 
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 
-path_train = '/Users/Flore/python/NLP/Assignment 2/data/traindata.csv'
-path_test = '/Users/Flore/python/NLP/Assignment 2/data/devdata.csv'
+path_train = 'data/traindata.csv'
+path_test = 'data/devdata.csv'
 
 class Classifier:
     """The Classifier"""
