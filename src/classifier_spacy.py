@@ -15,8 +15,8 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 
 
-path_train = '/Users/Flore/python/NLP/Assignment 2/data/traindata.csv'
-path_test = '/Users/Flore/python/NLP/Assignment 2/data/devdata.csv'
+path_train = 'data/traindata.csv'
+path_test = 'data/devdata.csv'
 
 
 class Classifier:
