@@ -145,7 +145,7 @@ class Classifier():
       best_accuracy = 0
       for epoch in range(self.EPOCHS):
         train_acc, train_loss = self.train_epoch(self.model,self.train_data_loader,self.loss_fn,optimizer,self.device,scheduler,len(self.data_train))
-        val_acc, val_loss = self.eval_model(self.model,self.val_data_loader,self.loss_fn,self.device,len(self.data_val))
+        val_acc, val_loss,_ = self.eval_model(self.model,self.val_data_loader,self.loss_fn,self.device,len(self.data_val))
         if val_acc > best_accuracy:
           #torch.save(self.model.state_dict(), 'best_model_state.pth')
           best_accuracy = val_acc
