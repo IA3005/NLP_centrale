@@ -80,7 +80,10 @@ class Classifier():
     dicti_values = {"positive":2,"negative":0,"neutral":1}
     return dicti_values[target]
   
-  
+  def reverse_numerical_target(self,target):
+    dicti_values = {2:"positive",0:"negative",1:"neutral"}
+    return dicti_values[target]
+    
   def create_data_loader(self,df, tokenizer, max_len, batch_size):
     ds = ReviewDataset(reviews=df.sentence.to_numpy(),targets=df.target.to_numpy(),target_term = df.target_term.to_numpy(),tokenizer=tokenizer, max_len=max_len )
     return DataLoader(ds,batch_size=batch_size,num_workers=2)
@@ -128,7 +131,7 @@ class Classifier():
               losses.append(loss.item())
               pred_targets.extend(preds.tolist())
 
-      return correct_predictions.double() / n_examples, np.mean(losses),pred_targets
+      return correct_predictions.double() / n_examples, np.mean(losses),self.reverse_numerical_target(pred_targets)
     
     
   def train(self,trainfile):
