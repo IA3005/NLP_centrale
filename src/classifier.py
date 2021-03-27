@@ -81,8 +81,16 @@ class Classifier():
     return dicti_values[target]
   
   def reverse_numerical_target(self,target):
-    dicti_values = {2:"positive",0:"negative",1:"neutral"}
-    return dicti_values[target]
+    l=[]
+    for i in target:
+      if i==2:
+        l.append("positive")
+      else:
+        if i==1:
+          l.append("neutral")
+        else:
+          l.append("negative")
+    return l
     
   def create_data_loader(self,df, tokenizer, max_len, batch_size):
     ds = ReviewDataset(reviews=df.sentence.to_numpy(),targets=df.target.to_numpy(),target_term = df.target_term.to_numpy(),tokenizer=tokenizer, max_len=max_len )
@@ -159,7 +167,5 @@ class Classifier():
       self.data_test["target"] = self.data_test.polarity.apply(self.numerical_target)
       self.test_data_loader = self.create_data_loader(self.data_test, self.tokenizer, self.MAX_LEN, self.BATCH_SIZE)
       val_acc, val_loss,preds = self.eval_model(self.model, self.test_data_loader, self.loss_fn,self.device, len(self.data_test))
-      print('')
-      print("Test Accuracy = ",val_acc*100," %") 
       return preds
       
