@@ -1,8 +1,5 @@
 import pandas as pd 
 
-import spacy
-nlp = spacy.load('en')
-
 import nltk
 from nltk.tokenize import word_tokenize        
 from nltk.corpus import stopwords
@@ -14,13 +11,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB # With alpha=0.53 acc=78.72
 from sklearn.svm import LinearSVC # With C=0.138 acc=79.26
 
-path_train = 'data/traindata.csv'
-path_test = 'data/devdata.csv'
 
 class Classifier:
     """The Classifier"""
 
-    # A useful function to clean and lemmatize the data
+    # A useful function 
     def create_sentence(dataset):
         '''As input : the column to be lemmatized.
         This function gives as output a list of strings, 
@@ -38,12 +33,12 @@ class Classifier:
 
         # We load the data and lower the text
         data_train = pd.read_csv(trainfile, sep = "\t", names = ["polarity", "category", "word", "offsets", "sentence"])
-        data_train['sentence_l'] = data_train['sentence'].apply(str.lower)
-        data_train['word'] = data_train['word'].apply(str.lower)
+        data_train['sentence_l'] = data_train.sentence.apply(str.lower)
+        data_train['word'] = data_train.word.apply(str.lower)
         
         # We try to keep all the no/nor/not words as this changes radically the sentiment analysis
-        data_train['sentence_l'] = data_train["sentence_l"].apply(lambda sentence: sentence.replace("can\'t", "can not"))
-        data_train['sentence_l'] = data_train["sentence_l"].apply(lambda sentence: sentence.replace("n\'t", " not"))
+        data_train['sentence_l'] = data_train.sentence_l.apply(lambda sentence: sentence.replace("can\'t", "can not"))
+        data_train['sentence_l'] = data_train.sentence_l.apply(lambda sentence: sentence.replace("n\'t", " not"))
         self.stopwords = stopwords.words("english")
         self.stopwords.remove('nor')
         self.stopwords.remove('no')
@@ -94,7 +89,6 @@ class Classifier:
         
         from keras.layers import Input, Dense, Embedding, Conv2D, MaxPool2D
         from keras.layers import Reshape, Flatten, Dropout, Concatenate
-        from keras.callbacks import ModelCheckpoint
         from keras.optimizers import Adam
         from keras.models import Model
         
@@ -109,7 +103,6 @@ class Classifier:
         batch_size = 50
         
         # this returns a tensor
-        print("Creating Model...")
         inputs = Input(shape=(sequence_length,), dtype='int32')
         embedding = Embedding(input_dim=vocabulary_size, output_dim=embedding_dim, input_length=sequence_length)(inputs)
         reshape = Reshape((sequence_length,embedding_dim,1))(embedding)
@@ -130,12 +123,11 @@ class Classifier:
         # this creates a model that includes
         model = Model(inputs=inputs, outputs=output)
         
-        checkpoint = ModelCheckpoint('weights.{epoch:03d}-{val_acc:.4f}.hdf5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto')
         adam = Adam(lr=1e-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
         
         model.compile(optimizer=adam, loss='binary_crossentropy', metrics=['accuracy'])
         print("Training Model...")
-        model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, verbose=1, callbacks=[checkpoint], validation_data=(X_test, y_test))  # starts training
+        model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, verbose=1, validation_data=(X_test, y_test))  # starts training
         
 
     def predict(self, datafile):
@@ -145,11 +137,11 @@ class Classifier:
  
         # We load the test data and lower the text
         data_test = pd.read_csv(datafile, sep = "\t", names = ["polarity", "category", "word", "offsets", "sentence"])
-        data_test['sentence_l'] = data_test['sentence'].apply(str.lower)
-        data_test['word'] = data_test['word'].apply(str.lower)
+        data_test['sentence_l'] = data_test.sentence.apply(str.lower)
+        data_test['word'] = data_test.word.apply(str.lower)
         
         # We try to keep all the no/nor/not words as this changes radically the sentiment analysis
-        data_test['sentence_l'] = data_test["sentence_l"].apply(lambda sentence: sentence.replace("can\'t", "can not"))
+        data_test['sentence_l'] = data_test.sentence_l.apply(lambda sentence: sentence.replace("can\'t", "can not"))
         data_test['sentence_l'] = data_test["sentence_l"].apply(lambda sentence: sentence.replace("n\'t", " not"))
         
         # We clean the data and stem the words
