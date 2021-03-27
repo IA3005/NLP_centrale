@@ -134,10 +134,10 @@ class Classifier():
     
   def train(self,trainfile):
       self.traindata = pd.read_csv(trainfile, sep="\t",header=None,names=["polarity","aspect_category","target_term","character_offsets","sentence"])
-      self.traindata["target"] = self.traindata.polarity.apply(numerical_target)
-      self.data_train, self.data_val = train_test_split(self.traindata, test_size=0.2, random_state=2020)
-      self.train_data_loader = create_data_loader(self.data_train, self.tokenizer, self.MAX_LEN, self.BATCH_SIZE)
-      self.val_data_loader = create_data_loader(self.data_val, self.tokenizer, self.MAX_LEN, self.BATCH_SIZE)
+      self.traindata["target"] = self.traindata.polarity.apply(self.numerical_target)
+      self.data_train, self.data_val = self.train_test_split(self.traindata, test_size=0.2, random_state=2020)
+      self.train_data_loader = self.create_data_loader(self.data_train, self.tokenizer, self.MAX_LEN, self.BATCH_SIZE)
+      self.val_data_loader = self.create_data_loader(self.data_val, self.tokenizer, self.MAX_LEN, self.BATCH_SIZE)
      
       optimizer = AdamW(self.model.parameters(), lr=2e-5, correct_bias=False)
       total_steps = len(self.train_data_loader) * self.EPOCHS
@@ -146,8 +146,8 @@ class Classifier():
      
       best_accuracy = 0
       for epoch in range(self.EPOCHS):
-        train_acc, train_loss = train_epoch(self.model,self.train_data_loader,self.loss_fn,optimizer,self.device,scheduler,len(self.data_train))
-        val_acc, val_loss = eval_model(self.model,self.val_data_loader,self.loss_fn,self.device,len(self.data_val))
+        train_acc, train_loss = self.train_epoch(self.model,self.train_data_loader,self.loss_fn,optimizer,self.device,scheduler,len(self.data_train))
+        val_acc, val_loss = self.eval_model(self.model,self.val_data_loader,self.loss_fn,self.device,len(self.data_val))
         if val_acc > best_accuracy:
           #torch.save(self.model.state_dict(), 'best_model_state.pth')
           best_accuracy = val_acc
@@ -155,6 +155,6 @@ class Classifier():
   def predict(self,datafile):
       self.data_test = pd.read_csv(datafile, sep="\t",header=None,names=["polarity","aspect_category","target_term","character_offsets","sentence"])
       self.data_test["target"] = self.data_test.polarity.apply(numerical_target)
-      self.test_data_loader = create_data_loader(self.data_test, self.tokenizer, self.MAX_LEN, self.BATCH_SIZE)
-      val_acc, val_loss = eval_model(self.model, self.test_data_loader, self.loss_fn,self.device, len(self.data_test))
-          
+      self.test_data_loader = self.create_data_loader(self.data_test, self.tokenizer, self.MAX_LEN, self.BATCH_SIZE)
+      val_acc, val_loss = self.eval_model(self.model, self.test_data_loader, self.loss_fn,self.device, len(self.data_test))
+      print("Test Accuracy = ", round(val_acc*100,4)," %") 
