@@ -10,6 +10,56 @@ from collections import defaultdict
 from sklearn.model_selection import train_test_split
 from transformers import BertModel, BertTokenizer, AdamW, get_linear_schedule_with_warmup
 
+class SentimentClassifier(nn.Module):
+  
+    def __init__(self, n_classes):
+      super(SentimentClassifier, self).__init__()
+      self.bert = BertModel.from_pretrained('bert-base-cased')
+      self.drop = nn.Dropout(p=0.3)
+      self.out = nn.Linear(self.bert.config.hidden_size, n_classes)
+
+    def forward(self, input_ids, attention_mask, token_type_ids):
+      pooled_output = self.bert(
+        input_ids=input_ids,
+        attention_mask=attention_mask,
+        token_type_ids=token_type_ids)[1]
+      output = self.drop(pooled_output)
+      return self.out(output)
+    
+  ###############################################################
+ class ReviewDataset(Dataset):
+  
+    def __init__(self, reviews, targets, target_term, tokenizer, max_len):
+      self.reviews = reviews
+      self.targets = targets
+      self.target_term = target_term
+      self.tokenizer = tokenizer
+      self.max_len = max_len
+
+    def __len__(self):
+      return len(self.reviews)
+
+    def __getitem__(self, item):
+      review = str(self.reviews[item])
+      target = self.targets[item]
+      target_term = str(self.target_term[item])
+      encoding = self.tokenizer.encode_plus(
+        review,target_term,
+        add_special_tokens=True,
+        max_length=self.max_len,
+        return_token_type_ids=True,
+        padding="max_length",
+        return_attention_mask=True,
+        return_tensors='pt',
+      )
+      return {
+        'review_text': review,
+        'target_term':target_term, 
+        'targets': torch.tensor(target),
+        'input_ids': encoding['input_ids'].flatten(),
+        'attention_mask': encoding['attention_mask'].flatten(),
+        'token_type_ids':encoding['token_type_ids'].flatten()
+      }
   
 class Classifier():
   """The Classifier"""
