@@ -126,7 +126,7 @@ class Classifier():
               loss = loss_fn(outputs, targets)
               correct_predictions += torch.sum(preds == targets)
               losses.append(loss.item())
-              pred_targets.extend(tolist(preds))
+              pred_targets.extend(preds.tolist())
 
       return correct_predictions.double() / n_examples, np.mean(losses),pred_targets
     
