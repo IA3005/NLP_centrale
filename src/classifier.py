@@ -113,7 +113,7 @@ class Classifier():
       model = model.eval()
       losses = []
       correct_predictions = 0
-    
+      pred_targets = []
       with torch.no_grad():
           for d in data_loader:
               input_ids = d["input_ids"].to(device)
@@ -126,8 +126,9 @@ class Classifier():
               loss = loss_fn(outputs, targets)
               correct_predictions += torch.sum(preds == targets)
               losses.append(loss.item())
+              pred_targets.extend(tolist(preds))
 
-      return correct_predictions.double() / n_examples, np.mean(losses),preds
+      return correct_predictions.double() / n_examples, np.mean(losses),pred_targets
     
     
   def train(self,trainfile):
