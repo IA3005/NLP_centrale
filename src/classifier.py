@@ -127,10 +127,8 @@ class Classifier():
               correct_predictions += torch.sum(preds == targets)
               losses.append(loss.item())
 
-      return correct_predictions.double() / n_examples, np.mean(losses)
+      return correct_predictions.double() / n_examples, np.mean(losses),preds
     
-      self.device = device
-      self.model = SentimentClassifier(3).to(self.device)
     
   def train(self,trainfile):
       self.traindata = pd.read_csv(trainfile, sep="\t",header=None,names=["polarity","aspect_category","target_term","character_offsets","sentence"])
@@ -154,7 +152,10 @@ class Classifier():
      
   def predict(self,datafile):
       self.data_test = pd.read_csv(datafile, sep="\t",header=None,names=["polarity","aspect_category","target_term","character_offsets","sentence"])
-      self.data_test["target"] = self.data_test.polarity.apply(numerical_target)
+      self.data_test["target"] = self.data_test.polarity.apply(self.numerical_target)
       self.test_data_loader = self.create_data_loader(self.data_test, self.tokenizer, self.MAX_LEN, self.BATCH_SIZE)
-      val_acc, val_loss = self.eval_model(self.model, self.test_data_loader, self.loss_fn,self.device, len(self.data_test))
+      val_acc, val_loss,preds = self.eval_model(self.model, self.test_data_loader, self.loss_fn,self.device, len(self.data_test))
+      print('')
       print("Test Accuracy = ",val_acc*100," %") 
+      return preds
+      
