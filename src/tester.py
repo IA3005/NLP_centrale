@@ -1,7 +1,7 @@
 import time, sys
 import numpy as np
 
-from classifier import Classifier
+from src.classifier import Classifier
 
 
 def set_reproducible():
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     n_runs = 5
     if len(sys.argv) > 1:
         n_runs = int(sys.argv[1])
-    datadir = "../data/"
+    datadir = "data/"
     trainfile =  datadir + "traindata.csv"
     devfile =  datadir + "devdata.csv"
     testfile = None
