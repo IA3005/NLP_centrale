@@ -1,9 +1,8 @@
 import pandas as pd 
-
-import spacy
-nlp = spacy.load('en')
-
+import numpy as np
 import nltk
+nltk.download('stopwords')
+nltk.download('punkt')
 from nltk.tokenize import word_tokenize        
 from nltk.corpus import stopwords
 
@@ -14,17 +13,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB # With alpha=0.53 acc=78.72
 from sklearn.svm import LinearSVC # With C=0.138 acc=79.26
 
-path_train = 'data/traindata.csv'
-path_test = 'data/devdata.csv'
-
 class Classifier:
     """The Classifier"""
 
-    # A useful function to clean and lemmatize the data
+    # A useful function
     def create_sentence(dataset):
-        '''As input : the column to be lemmatized.
-        This function gives as output a list of strings, 
-        corresponding to the lemmatized words.'''
         clean_data = []
         for row in dataset:
             sentence = ''
@@ -65,7 +58,7 @@ class Classifier:
     
         # We recreate the sentences with the selected and cleaned words
         Classifier.create_sentence = staticmethod(Classifier.create_sentence)
-        data_train.clean_sentence = Classifier.create_sentence(data_train.stems)
+        data_train["clean_sentence"] = Classifier.create_sentence(data_train.stems)
         
         # We create a BOW vector
         self.restaurant_vect = CountVectorizer(min_df=1, tokenizer=nltk.word_tokenize)
@@ -77,8 +70,7 @@ class Classifier:
         
         # Split data into training and test sets
         test_size = 0
-        X_train, X_test, y_train, y_test = train_test_split(reviews_tfidf, data_train.polarity, 
-                                                            test_size = test_size/100, random_state = None)
+        X_train, X_test, y_train, y_test = train_test_split(reviews_tfidf, data_train.polarity,test_size = 0.1, random_state = None)
         # Train a Linear Support Vector Classifier
         self.clf = LinearSVC(C=0.138).fit(X_train, y_train)
 
@@ -111,7 +103,7 @@ class Classifier:
 
         # We recreate the sentences with the selected and cleaned words
         Classifier.create_sentence = staticmethod(Classifier.create_sentence)
-        data_test.clean_sentence = Classifier.create_sentence(data_test.stems)
+        data_test["clean_sentence"] = Classifier.create_sentence(data_test.stems)
         
         # We create a BOW vector
         reviews_new_counts = self.restaurant_vect.transform(data_test.clean_sentence)
