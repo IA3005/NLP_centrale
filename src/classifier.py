@@ -157,4 +157,4 @@ class Classifier():
       self.data_test["target"] = self.data_test.polarity.apply(numerical_target)
       self.test_data_loader = self.create_data_loader(self.data_test, self.tokenizer, self.MAX_LEN, self.BATCH_SIZE)
       val_acc, val_loss = self.eval_model(self.model, self.test_data_loader, self.loss_fn,self.device, len(self.data_test))
-      print("Test Accuracy = ", round(val_acc*100,4)," %") 
+      print("Test Accuracy = ",val_acc*100," %") 
