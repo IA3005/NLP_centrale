@@ -161,6 +161,7 @@ class Classifier():
         if val_acc > best_accuracy:
           #torch.save(self.model.state_dict(), 'best_model_state.pth')
           best_accuracy = val_acc
+      print("Training Accuracy = ", np.round(best_accuracy.item()*100,2)," %")
      
   def predict(self,datafile):
       self.data_test = pd.read_csv(datafile, sep="\t",header=None,names=["polarity","aspect_category","target_term","character_offsets","sentence"])
