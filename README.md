@@ -34,7 +34,6 @@ Before the BERT model, we have implemented classifiers based on non-deep network
 To run them, you need only to replace "from classifier import Classifier" by "from classifier_1 import Classifier" or "from classifier_2 import Classifier" in "tester.py"
 For both classifiers 1 and 2, we started by preprocessing the data (tokenize, downcase, remove stopwords except "no", "nor", "nor" to keep the meaning, stemming). 
 Then, we created the BOW vector and transformed it with the tfidf scores. 
-For "classifier_1", we used a linear Support Vector Classifier and we get a test accuracy of 79.26% on the dev dataset.
-For "classifier_2", we used the multinomial Naive Bayes classifier and we get a test accuracy of 77.93% on the dev dataset.
+* For "classifier_1", we used a linear Support Vector Classifier and we get a test accuracy of 79.26% on the dev dataset.
+* For "classifier_2", we used the multinomial Naive Bayes classifier and we get a test accuracy of 77.93% on the dev dataset.
 
-created a 
