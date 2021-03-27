@@ -135,7 +135,7 @@ class Classifier():
   def train(self,trainfile):
       self.traindata = pd.read_csv(trainfile, sep="\t",header=None,names=["polarity","aspect_category","target_term","character_offsets","sentence"])
       self.traindata["target"] = self.traindata.polarity.apply(self.numerical_target)
-      self.data_train, self.data_val = self.train_test_split(self.traindata, test_size=0.2, random_state=2020)
+      self.data_train, self.data_val = train_test_split(self.traindata, test_size=0.2, random_state=2020)
       self.train_data_loader = self.create_data_loader(self.data_train, self.tokenizer, self.MAX_LEN, self.BATCH_SIZE)
       self.val_data_loader = self.create_data_loader(self.data_val, self.tokenizer, self.MAX_LEN, self.BATCH_SIZE)
      
